@@ -1,0 +1,10 @@
+# OpenVPN subnet and submask to use for clients
+openvpn_subnet: '192.168.0.0'
+openvpn_submask: '255.255.255.0'
+
+# OpenVPN Route to push
+openvpn_route: '192.168.0.0'
+openvpn_route_submask: '255.255.0.0'
+
+# OpenVPN server interface where clients need to exit on
+openvpn_out_interface: 'eth0'

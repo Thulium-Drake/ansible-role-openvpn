@@ -1,0 +1,82 @@
+---
+- name: 'Install packages'
+  package:
+    name: 'openvpn'
+    state: 'present'
+
+- name: 'Ensure OpenVPN config directories'
+  file:
+    path: "/etc/openvpn/{{ dir.name }}"
+    state: 'directory'
+    mode: "{{ dir.mode }}"
+    owner: 'root'
+    group: 'root'
+  loop:
+    - { name: 'bin', mode: '0755' }
+    - { name: 'ccd', mode: '0755' }
+    - { name: 'cert', mode: '0700' }
+    - { name: 'private', mode: '0700' }
+  loop_control:
+    loop_var: 'dir'
+
+- name: 'Ensure OpenVPN log directory'
+  file:
+    path: '/var/log/openvpn'
+    state: 'directory'
+    mode: 0755
+    owner: 'root'
+    group: 'root'
+
+- name: 'Ensure OpenVPN authentication script'
+  copy:
+    src: 'authenticate.sh'
+    dest: '/etc/openvpn/bin/authenticate.sh'
+    mode: 0755
+    owner: 'root'
+    group: 'root'
+
+- name: 'Ensure OpenVPN server config'
+  template:
+    src: 'server.conf.j2'
+    dest: '/etc/openvpn/server.conf'
+    mode: 0755
+    owner: 'root'
+    group: 'root'
+  notify: 'restart openvpn'
+
+- name: 'Ensure DHparams'
+  openssl_dhparams:
+    path: '/etc/openvpn/cert/dh4096.pem'
+    size: 4096
+    mode: 0644
+    owner: 'root'
+    group: 'root'
+
+- name: 'Ensure IPtables masquerading rules'
+  iptables:
+    table: 'nat'
+    chain: 'POSTROUTING'
+    jump: 'MASQUERADE'
+    out_interface: "{{ interface }}"
+  loop:
+    - 'tun0'
+    - "{{ openvpn_out_interface }}"
+  loop_control:
+    loop_var: 'interface'
+
+- name: 'Ensure IPtables masquerading rules persistence'
+  lineinfile:
+    path: '/etc/rc.local'
+    line: "iptables -t nat -A POSTROUTING -o {{ interface }} -j MASQUERADE"
+    insertbefore: 'exit 0'
+  loop:
+    - 'tun0'
+    - "{{ openvpn_out_interface }}"
+  loop_control:
+    loop_var: 'interface'
+
+- name: 'Enable and start service'
+  service:
+    name: 'openvpn@server'
+    state: 'started'
+    enabled: true
