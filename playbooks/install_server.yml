@@ -1,0 +1,27 @@
+- name: 'Configure OpenVPN servers'
+  hosts: 'vpn_servers'
+  tasks:
+    - name: 'Ensure SSL directory'
+      file:
+        path: '/etc/ssl/openvpn'
+        state: 'directory'
+        owner: 'root'
+        group: 'root'
+        mode: 0700
+    - name: 'Ensure certificates'
+      copy:
+        src: "{{ playbook_dir }}/files/openvpn/{{ file.src }}"
+        dest: "/etc/ssl/openvpn/{{ file.dest }}"
+        owner: 'root'
+        group: 'root'
+        mode: 0700
+      loop:
+        - { src: "{{ inventory_hostname }}.key", dest: 'server.key' }
+        - { src: "{{ inventory_hostname }}.crt", dest: 'server.crt' }
+        - { src: 'ca.crt', dest: 'ca.crt' }
+      loop_control:
+        loop_var: 'file'
+    - name: 'Configure OpenVPN'
+      import_role:
+        name: 'openvpn'
+        tasks_from: 'install_server.yml'
