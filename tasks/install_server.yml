@@ -14,7 +14,6 @@
   loop:
     - { name: 'bin', mode: '0755' }
     - { name: 'ccd', mode: '0755' }
-    - { name: 'cert', mode: '0700' }
     - { name: 'private', mode: '0700' }
   loop_control:
     loop_var: 'dir'
@@ -45,8 +44,8 @@
   notify: 'restart openvpn'
 
 - name: 'Ensure DHparams'
-  openssl_dhparams:
-    path: '/etc/openvpn/cert/dh4096.pem'
+  openssl_dhparam:
+    path: '/etc/ssl/openvpn/dh4096.pem'
     size: 4096
     mode: 0644
     owner: 'root'
