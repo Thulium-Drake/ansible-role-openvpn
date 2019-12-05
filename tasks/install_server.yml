@@ -55,6 +55,8 @@
     - { name: 'net.ipv4.ip_no_pmtu_disc', value: 1 }
     - { name: 'net.ipv4.conf.all.accept_redirects', value: 0 }
     - { name: 'net.ipv4.conf.all.send_redirects', value: 0 }
+  loop_control:
+    loop_var: 'sysctl_param'
 
 - name: 'Ensure DHparams'
   openssl_dhparam:
