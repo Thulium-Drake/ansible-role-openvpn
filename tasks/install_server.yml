@@ -43,6 +43,19 @@
     group: 'root'
   notify: 'restart openvpn'
 
+- name: 'Ensure kernel system parameters'
+  sysctl:
+    name: "{{ sysctl_param.name }}"
+    value: "{{ sysctl_param.value }}"
+    state: 'present'
+    sysctl_set: true
+    reload: true
+  loop:
+    - { name: 'net.ipv4.ip_forward', value: 1 }
+    - { name: 'net.ipv4.ip_no_pmtu_disc', value: 1 }
+    - { name: 'net.ipv4.conf.all.accept_redirects', value: 0 }
+    - { name: 'net.ipv4.conf.all.send_redirects', value: 0 }
+
 - name: 'Ensure DHparams'
   openssl_dhparam:
     path: '/etc/ssl/openvpn/dh4096.pem'
