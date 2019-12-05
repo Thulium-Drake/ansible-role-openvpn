@@ -1,4 +1,9 @@
 ---
+- name: 'Check variables (skip is OK)'
+  fail:
+    msg: 'Unsupported auth method!'
+  when: openvpn_auth not in supported_auth
+
 - name: 'Install packages'
   package:
     name: 'openvpn'
@@ -33,6 +38,7 @@
     mode: 0755
     owner: 'root'
     group: 'root'
+  when: openvpn_auth == 'script'
 
 - name: 'Ensure OpenVPN server config'
   template:

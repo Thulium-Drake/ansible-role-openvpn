@@ -8,3 +8,7 @@ openvpn_route_submask: '255.255.0.0'
 
 # OpenVPN server interface where clients need to exit on
 openvpn_out_interface: 'eth0'
+
+# OpenVPN authentication method (script or pam)
+openvpn_auth: 'script'
+openvpn_pam_file: 'login'
