@@ -81,13 +81,10 @@
 - name: 'Ensure IPtables masquerading rules persistence'
   blockinfile:
     path: '/etc/rc.local'
-    block: "iptables -t nat -A POSTROUTING -o {{ interface }} -j MASQUERADE"
+    block: |
+      iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+      iptables -t nat -A POSTROUTING -o {{ openvpn_out_interface }} -j MASQUERADE
     insertbefore: 'exit 0'
-  loop:
-    - 'tun0'
-    - "{{ openvpn_out_interface }}"
-  loop_control:
-    loop_var: 'interface'
 
 - name: 'Enable and start service'
   service:
