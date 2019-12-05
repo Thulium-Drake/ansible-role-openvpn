@@ -11,6 +11,12 @@
       - 'haveged'
     state: 'present'
 
+- name: 'Ensure haveged service'
+  service:
+    name: 'haveged'
+    state: 'started'
+    enabled: true
+
 - name: 'Ensure OpenVPN config directories'
   file:
     path: "/etc/openvpn/{{ dir.name }}"
