@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# This file is managed via Ansible, all your changes will be lost!
+# DO NOT EDIT
 PWFILE=/etc/openvpn/private/passwd
 
 NOW=$(date '+%Y%m%d')

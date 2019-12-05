@@ -79,9 +79,9 @@
     loop_var: 'interface'
 
 - name: 'Ensure IPtables masquerading rules persistence'
-  lineinfile:
+  blockinfile:
     path: '/etc/rc.local'
-    line: "iptables -t nat -A POSTROUTING -o {{ interface }} -j MASQUERADE"
+    block: "iptables -t nat -A POSTROUTING -o {{ interface }} -j MASQUERADE"
     insertbefore: 'exit 0'
   loop:
     - 'tun0'
