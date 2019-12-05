@@ -22,13 +22,13 @@ script-security 3
 client-cert-not-required
 username-as-common-name
 client-config-dir ccd
-{%- if openvpn_auth == 'script' -%}
+{% if openvpn_auth == 'script' -%}
 # authenticate based on local openvpn password file
 auth-user-pass-verify /etc/openvpn/bin/authenticate.sh via-env
 {%- else -%}
 # authenticate via PAM
-plugin /usr/share/openvpn/plugin/lib/openvpn-auth-pam.so {{ openvpn_pam_file }}
-{%- endif -%}
+plugin /usr/lib/openvpn/openvpn-plugin-auth-pam.so {{ openvpn_pam_file }}
+{%- endif %}
 
 auth SHA256
 cipher AES-256-CBC
