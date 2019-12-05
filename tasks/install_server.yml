@@ -6,7 +6,9 @@
 
 - name: 'Install packages'
   package:
-    name: 'openvpn'
+    name:
+      - 'openvpn'
+      - 'haveged'
     state: 'present'
 
 - name: 'Ensure OpenVPN config directories'
