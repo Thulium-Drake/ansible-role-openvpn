@@ -2,6 +2,7 @@
 This role provides a means to install an OpenVPN server on a Linux system (currently only tested on Debian)
 
 The server will use a simple script to authenticate users using a password file.
+It can also be configured to use a specified PAM file.
 
 ## Setup
 Before setting this up, you need to arrange:

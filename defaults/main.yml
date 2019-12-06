@@ -11,4 +11,6 @@ openvpn_out_interface: 'eth0'
 
 # OpenVPN authentication method (script or pam)
 openvpn_auth: 'script'
+
+# When using PAM, use the following PAM file
 openvpn_pam_file: 'login'
