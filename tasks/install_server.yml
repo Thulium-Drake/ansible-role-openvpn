@@ -9,13 +9,19 @@
     name:
       - 'openvpn'
       - 'haveged'
+      - 'iptables-persistent'
     state: 'present'
 
-- name: 'Ensure haveged service'
+- name: 'Ensure services'
   service:
-    name: 'haveged'
+    name: "{{ service }}"
     state: 'started'
     enabled: true
+  loop:
+    - 'haveged'
+    - 'netfilter-persistent'
+  loop_control:
+    loop_var: 'service'
 
 - name: 'Ensure OpenVPN config directories'
   file:
@@ -91,14 +97,6 @@
     - "{{ openvpn_out_interface }}"
   loop_control:
     loop_var: 'interface'
-
-- name: 'Ensure IPtables masquerading rules persistence'
-  blockinfile:
-    path: '/etc/rc.local'
-    block: |
-      iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
-      iptables -t nat -A POSTROUTING -o {{ openvpn_out_interface }} -j MASQUERADE
-    insertbefore: 'exit 0'
 
 - name: 'Enable and start service'
   service:
