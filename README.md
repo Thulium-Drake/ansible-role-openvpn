@@ -1,3 +1,5 @@
+[![Build Status](https://drone.element-networks.nl/api/badges/Ansible/role-openvpn/status.svg)](https://drone.element-networks.nl/Ansible/role-openvpn)
+
 # Ansible role to install OpenVPN
 This role provides a means to install an OpenVPN server on a Linux system (currently only tested on Debian)
 
