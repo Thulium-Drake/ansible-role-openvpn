@@ -5,8 +5,8 @@ syslog openvpn-server
 log /var/log/openvpn/server.log
 
 dev tun0
-proto udp
-port 1194
+proto {{ openvpn_proto }}
+port {{ openvpn_port }}
 
 topology subnet
 server {{ openvpn_subnet }} {{ openvpn_submask }}
@@ -18,6 +18,10 @@ cert /etc/ssl/openvpn/server.crt
 key /etc/ssl/openvpn/server.key
 
 script-security 3
+
+{% if openvpn_permit_c2c_traffic -%}
+client-to-client
+{%- endif %}
 
 client-cert-not-required
 username-as-common-name

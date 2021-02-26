@@ -16,12 +16,14 @@
         group: 'root'
         mode: 0700
       loop:
-        - { src: "{{ inventory_hostname }}.key", dest: 'server.key' }
-        - { src: "{{ inventory_hostname }}.crt", dest: 'server.crt' }
-        - { src: 'ca.crt', dest: 'ca.crt' }
+        - src: "{{ inventory_hostname }}.key"
+          dest: 'server.key'
+        - src: "{{ inventory_hostname }}.crt"
+          dest: 'server.crt'
+        - src: 'ca.crt'
+          dest: 'ca.crt'
       loop_control:
         loop_var: 'file'
     - name: 'Configure OpenVPN'
       import_role:
         name: 'openvpn'
-        tasks_from: 'install_server.yml'

@@ -1,0 +1,19 @@
+---
+- name: 'Ensure OpenVPN port'
+  ansible.posix.firewalld:
+    port: "{{ openvpn_port }}/{{ openvpn_proto }}"
+    permanent: true
+    immediate: true
+    state: 'present'
+
+- name: 'Warn about IPtables masquerading rules'
+  debug:
+    msg: '[WARNING]: Masquerading is not implemented with Firewalld'
+  when: openvpn_out_nat_traffic
+
+- name: 'Disable Client-to-Client traffic'
+  shell: |
+    firewall-cmd --direct --permanent --add-rule ipv4 filter FORWARD -i tun0 -o  -j DROP
+    firewall-cmd --reload
+  warn: false # Direct rules are not implemented in the firewalld module
+  when: not openvpn_permit_c2c_traffic

@@ -1,0 +1,44 @@
+---
+- name: 'Install packages'
+  package:
+    name:
+      - 'iptables-persistent'
+    state: 'present'
+
+- name: 'Ensure services'
+  service:
+    name: "{{ service }}"
+    state: 'started'
+    enabled: true
+  loop:
+    - 'netfilter-persistent'
+  loop_control:
+    loop_var: 'service'
+
+- name: 'Ensure OpenVPN port'
+  iptables:
+    chain: 'INPUT'
+    protocol: "{{ openvpn_proto }}"
+    destination_port: "{{ openvpn_port }}"
+    jump: 'ACCEPT'
+
+- name: 'Ensure IPtables masquerading rules'
+  iptables:
+    table: 'nat'
+    chain: 'POSTROUTING'
+    out_interface: "{{ interface }}"
+    jump: 'MASQUERADE'
+  loop:
+    - 'tun0'
+    - "{{ openvpn_out_interface }}"
+  loop_control:
+    loop_var: 'interface'
+  when: openvpn_out_nat_traffic
+
+- name: 'Disable Client-to-Client traffic'
+  iptables:
+    chain: 'FORWARD'
+    in_interface: 'tun0'
+    out_interface: 'tun0'
+    jump: 'DROP'
+  when: not openvpn_permit_c2c_traffic

@@ -9,7 +9,6 @@
     name:
       - 'openvpn'
       - 'haveged'
-      - 'iptables-persistent'
     state: 'present'
 
 - name: 'Ensure services'
@@ -19,15 +18,14 @@
     enabled: true
   loop:
     - 'haveged'
-    - 'netfilter-persistent'
   loop_control:
     loop_var: 'service'
 
 - name: 'Ensure OpenVPN config directories'
   file:
-    path: "/etc/openvpn/{{ dir.name }}"
+    path: "/etc/openvpn/{{ dir['name'] }}"
     state: 'directory'
-    mode: "{{ dir.mode }}"
+    mode: "{{ dir['mode'] }}"
     owner: 'root'
     group: 'root'
   loop:
@@ -71,10 +69,14 @@
     sysctl_set: true
     reload: true
   loop:
-    - { name: 'net.ipv4.ip_forward', value: 1 }
-    - { name: 'net.ipv4.ip_no_pmtu_disc', value: 1 }
-    - { name: 'net.ipv4.conf.all.accept_redirects', value: 0 }
-    - { name: 'net.ipv4.conf.all.send_redirects', value: 0 }
+    - name: 'net.ipv4.ip_forward'
+      value: 1
+    - name: 'net.ipv4.ip_no_pmtu_disc'
+      value: 1
+    - name: 'net.ipv4.conf.all.accept_redirects'
+      value: 0
+    - name: 'net.ipv4.conf.all.send_redirects'
+      value: 0
   loop_control:
     loop_var: 'sysctl_param'
 
@@ -86,17 +88,13 @@
     owner: 'root'
     group: 'root'
 
-- name: 'Ensure IPtables masquerading rules'
-  iptables:
-    table: 'nat'
-    chain: 'POSTROUTING'
-    jump: 'MASQUERADE'
-    out_interface: "{{ interface }}"
-  loop:
-    - 'tun0'
-    - "{{ openvpn_out_interface }}"
-  loop_control:
-    loop_var: 'interface'
+- name: 'Setup firewall'
+  import_tasks: 'firewall_iptables.yml'
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: 'Setup firewall'
+  import_tasks: 'firewall_firewalld.yml'
+  when: ansible_facts['os_family'] == 'RedHat'
 
 - name: 'Enable and start service'
   service:
