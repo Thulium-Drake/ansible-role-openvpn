@@ -1,8 +1,9 @@
 ---
-- name: 'Check variables (skip is OK)'
-  fail:
-    msg: 'Unsupported auth method!'
-  when: openvpn_auth not in supported_auth
+- name: 'Check variables'
+  assert:
+    that:
+      - openvpn_auth in supported_auth
+    fail_msg: 'Unsupported configuration!'
 
 - name: 'Install packages'
   package:
@@ -32,6 +33,7 @@
     - { name: 'bin', mode: '0755' }
     - { name: 'ccd', mode: '0755' }
     - { name: 'private', mode: '0700' }
+    - { name: 'ssl', mode: '0700' }
   loop_control:
     loop_var: 'dir'
 
@@ -87,6 +89,12 @@
     mode: 0644
     owner: 'root'
     group: 'root'
+
+- name: 'Ensure password file present'
+  copy:
+    src: 'passwd.example'
+    dest: '/etc/openvpn/private/passwd'
+    force: false
 
 - name: 'Setup firewall'
   import_tasks: 'firewall_iptables.yml'

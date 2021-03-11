@@ -1,4 +1,10 @@
 ---
+- name: 'Ensure interface in firewalld'
+  ansible.posix.firewalld:
+    interface: 'tun0'
+    zone: 'public'
+    state: 'enabled'
+
 - name: 'Ensure OpenVPN port'
   ansible.posix.firewalld:
     port: "{{ openvpn_port }}/{{ openvpn_proto }}"
@@ -13,8 +19,10 @@
 
 - name: 'Disable Client-to-Client traffic'
   shell: |
-    firewall-cmd --direct --permanent --add-rule ipv4 filter FORWARD -i tun0 -o tun0 -j DROP
+    firewall-cmd --direct --permanent --add-rule ipv4 filter FORWARD 1 -i tun0 -o tun0 -j DROP
+    RET=$?
     firewall-cmd --reload
+    exit $RET
   args:
     warn: false # Direct rules are not implemented in the firewalld module
   when: not openvpn_permit_c2c_traffic
