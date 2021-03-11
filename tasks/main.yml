@@ -44,13 +44,20 @@
     owner: 'root'
     group: 'root'
 
-- name: 'Ensure OpenVPN authentication script'
-  copy:
-    src: 'authenticate.sh'
-    dest: '/etc/openvpn/bin/authenticate.sh'
-    mode: 0755
-    owner: 'root'
-    group: 'root'
+- block:
+  - name: 'Ensure OpenVPN authentication script'
+    copy:
+      src: 'authenticate.sh'
+      dest: '/etc/openvpn/bin/authenticate.sh'
+      mode: 0755
+      owner: 'root'
+      group: 'root'
+
+  - name: 'Ensure password file present'
+    copy:
+      src: 'passwd.example'
+      dest: '/etc/openvpn/private/passwd'
+      force: false
   when: openvpn_auth == 'script'
 
 - name: 'Ensure OpenVPN server config'
@@ -88,12 +95,6 @@
     mode: 0644
     owner: 'root'
     group: 'root'
-
-- name: 'Ensure password file present'
-  copy:
-    src: 'passwd.example'
-    dest: '/etc/openvpn/private/passwd'
-    force: false
 
 - name: 'Setup firewall'
   import_tasks: 'firewall_iptables.yml'
