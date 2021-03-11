@@ -62,7 +62,7 @@
   notify: 'restart openvpn'
 
 - name: 'Ensure kernel system parameters'
-  sysctl:
+  ansible.posix.sysctl:
     name: "{{ sysctl_param.name }}"
     value: "{{ sysctl_param.value }}"
     state: 'present'
@@ -81,20 +81,24 @@
     loop_var: 'sysctl_param'
 
 - name: 'Ensure DHparams'
-  openssl_dhparam:
-    path: '/etc/ssl/openvpn/dh4096.pem'
-    size: 4096
+  community.crypto.openssl_dhparam:
+    path: '/etc/openvpn/ssl/dh4096.pem'
+    size: "{{ openvpn_dhparams_size }}"
     mode: 0644
     owner: 'root'
     group: 'root'
 
 - name: 'Setup firewall'
   import_tasks: 'firewall_iptables.yml'
-  when: ansible_facts['os_family'] == 'Debian'
+  when:
+    - ansible_facts['os_family'] == 'Debian'
+    - openvpn_manage_firewall
 
 - name: 'Setup firewall'
   import_tasks: 'firewall_firewalld.yml'
-  when: ansible_facts['os_family'] == 'RedHat'
+  when:
+    - ansible_facts['os_family'] == 'RedHat'
+    - openvpn_manage_firewall
 
 - name: 'Enable and start service'
   service:

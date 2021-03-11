@@ -10,15 +10,21 @@ openvpn_submask: '255.255.255.0'
 openvpn_route: '192.168.0.0'
 openvpn_route_submask: '255.255.0.0'
 
-# NAT client traffic and which interface to NAT to
-openvpn_out_nat_traffic: false
-openvpn_out_interface: 'eth0'
-
 # OpenVPN authentication method (script or pam)
 openvpn_auth: 'script'
 
 # When using PAM, use the following PAM file
 openvpn_pam_file: 'login'
 
+# Configure the firewall (required for openvpn_permit_c2c_traffic and NAT)
+openvpn_manage_firewall: true
+
+# NAT client traffic and which interface to NAT to
+openvpn_out_nat_traffic: false
+openvpn_out_interface: 'eth0'
+
 # Allow VPN clients to communicate to each other (Client-to-Client)
 openvpn_permit_c2c_traffic: false
+
+# DH Parameters size
+openvpn_dhparams_size: 4096
