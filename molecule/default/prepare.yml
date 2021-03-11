@@ -1,0 +1,48 @@
+---
+- name: 'Prepare image'
+  hosts: 'all'
+  tasks:
+    - name: 'Update APT cache'
+      apt:
+        update_cache: true
+      when: ansible_facts['os_family'] == 'Debian'
+
+    - name: 'Update YUM cache'
+      yum:
+        update_cache: true
+      when: ansible_facts['os_family'] == 'RedHat'
+
+    - name: 'Ensure OS-specific packages'
+      package:
+        name:
+          - 'firewalld'
+          - 'python-firewall'
+      when: ansible_facts['os_family'] == 'RedHat'
+
+    - name: 'Ensure OS-specific services'
+      service:
+        name: 'firewalld'
+        state: 'started'
+      when: ansible_facts['os_family'] == 'RedHat'
+
+    - name: 'Ensure directory'
+      file:
+        path: '/etc/ssl/openvpn'
+        state: 'directory'
+
+    - name: 'Generate SSL key'
+      community.crypto.openssl_privatekey:
+        path: '/etc/ssl/openvpn/server.key'
+        size: 2048
+
+    - name: 'Generate SSL cert'
+      community.crypto.x509_certificate:
+        path: '/etc/ssl/openvpn/server.crt'
+        privatekey_path: '/etc/ssl/openvpn/server.key'
+        provider: 'selfsigned'
+
+    - name: 'Copy cert to ca'
+      copy:
+        src: '/etc/ssl/openvpn/server.crt'
+        dest: '/etc/ssl/openvpn/ca.crt'
+        remote_src: true

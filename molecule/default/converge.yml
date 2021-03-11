@@ -1,0 +1,12 @@
+---
+- name: 'Converge'
+  hosts: 'all'
+  tasks:
+    - name: 'Run role'
+      import_role:
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+  vars:
+    openvpn_dhparams_size: 1024
+    openvpn_ssl_ca: '/etc/ssl/openvpn/ca.crt'
+    openvpn_ssl_cert: '/etc/ssl/openvpn/server.crt'
+    openvpn_ssl_key: '/etc/ssl/openvpn/server.key'
