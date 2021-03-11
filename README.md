@@ -9,8 +9,8 @@ It can also be configured to use a specified PAM file.
 ## Setup
 Before setting this up, you need to arrange:
 
-* An SSL server certificate for the server in /etc/ssl/openvpn/server.crt|key
-* The CA certificate for that certificate in /etc/ssl/openvpn/ca.crt
+* An SSL server certificate
+* The CA certificate that issued your SSL certificate
 
 Then you need to configure the server an Ansible playbook along the lines of the one in [playbooks](playbooks/)
 

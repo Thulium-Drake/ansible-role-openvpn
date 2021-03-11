@@ -2,6 +2,11 @@
 openvpn_port: 1194
 openvpn_proto: 'udp'
 
+# SSL certificate setup (these files are provided by the ssl-cert package on Debian-like systems)
+openvpn_ssl_key: '/etc/ssl/private/ssl-cert-snakeoil.key'
+openvpn_ssl_cert: '/etc/ssl/certs/ssl-cert-snakeoil.pem'
+openvpn_ca_cert: '/etc/ssl/certs/ssl-cert-snakeoil.pem'
+
 # OpenVPN subnet and submask to use for clients
 openvpn_subnet: '192.168.0.0'
 openvpn_submask: '255.255.255.0'

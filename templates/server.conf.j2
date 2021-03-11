@@ -12,10 +12,10 @@ topology subnet
 server {{ openvpn_subnet }} {{ openvpn_submask }}
 ifconfig-pool-persist pool.txt
 
-ca /etc/openvpn/ssl/ca.crt
-dh /etc/openvpn/ssl/dh4096.pem
-cert /etc/openvpn/ssl/server.crt
-key /etc/openvpn/ssl/server.key
+ca {{ openvpn_ca_cert }}
+dh /etc/openvpn/dhparams.pem
+cert {{ openvpn_ssl_cert }}
+key {{ openvpn_ssl_key }}
 
 script-security 3
 

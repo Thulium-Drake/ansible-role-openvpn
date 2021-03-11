@@ -33,7 +33,6 @@
     - { name: 'bin', mode: '0755' }
     - { name: 'ccd', mode: '0755' }
     - { name: 'private', mode: '0700' }
-    - { name: 'ssl', mode: '0700' }
   loop_control:
     loop_var: 'dir'
 
@@ -84,7 +83,7 @@
 
 - name: 'Ensure DHparams'
   community.crypto.openssl_dhparam:
-    path: '/etc/openvpn/ssl/dh4096.pem'
+    path: '/etc/openvpn/dhparams.pem'
     size: "{{ openvpn_dhparams_size }}"
     mode: 0644
     owner: 'root'
