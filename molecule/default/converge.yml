@@ -3,7 +3,7 @@
   hosts: 'all'
   tasks:
     - name: 'Run role'
-      import_role:
+      include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
   vars:
     openvpn_dhparams_size: 1024
