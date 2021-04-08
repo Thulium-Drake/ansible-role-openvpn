@@ -20,6 +20,8 @@
 - name: 'Disable Client-to-Client traffic'
   shell: |
     firewall-cmd --direct --permanent --add-rule ipv4 filter FORWARD 1 -i tun0 -o tun0 -j DROP
+    firewall-cmd --direct --permanent --add-rule ipv4 filter FORWARD 1 -i tun0 -o  {{ openvpn_out_interface}} -j DROP
+    firewall-cmd --direct --permanent --add-rule ipv4 filter FORWARD 1 -i {{ openvpn_out_interface }} -o tun0 -j DROP
     RET=$?
     firewall-cmd --reload
     exit $RET
