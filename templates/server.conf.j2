@@ -31,7 +31,7 @@ client-config-dir ccd
 auth-user-pass-verify /etc/openvpn/bin/authenticate.sh via-env
 {%- else -%}
 # authenticate via PAM
-plugin /usr/lib/openvpn/openvpn-plugin-auth-pam.so {{ openvpn_pam_file }}
+plugin {{ openvpn_pam_plugin }} {{ openvpn_pam_file }}
 {%- endif %}
 
 auth SHA256

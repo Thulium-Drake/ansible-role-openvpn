@@ -20,6 +20,7 @@ openvpn_auth: 'script'
 
 # When using PAM, use the following PAM file
 openvpn_pam_file: 'login'
+openvpn_pam_plugin: '/usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so'
 
 # Configure the firewall (required for openvpn_permit_c2c_traffic and NAT)
 openvpn_manage_firewall: true
