@@ -1,12 +1,12 @@
 ---
 - name: 'Install packages'
-  package:
+  ansible.builtin.package:
     name:
       - 'iptables-persistent'
     state: 'present'
 
 - name: 'Ensure services'
-  service:
+  ansible.builtin.service:
     name: "{{ service }}"
     state: 'started'
     enabled: true
@@ -16,14 +16,14 @@
     loop_var: 'service'
 
 - name: 'Ensure OpenVPN port'
-  iptables:
+  ansible.builtin.iptables:
     chain: 'INPUT'
     protocol: "{{ openvpn_proto }}"
     destination_port: "{{ openvpn_port }}"
     jump: 'ACCEPT'
 
 - name: 'Ensure IPtables masquerading rules'
-  iptables:
+  ansible.builtin.iptables:
     table: 'nat'
     chain: 'POSTROUTING'
     out_interface: "{{ interface }}"
@@ -36,7 +36,7 @@
   when: openvpn_out_nat_traffic
 
 - name: 'Disable Client-to-Client traffic'
-  iptables:
+  ansible.builtin.iptables:
     chain: 'FORWARD'
     in_interface: 'tun0'
     out_interface: 'tun0'

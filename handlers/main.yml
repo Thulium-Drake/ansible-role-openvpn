@@ -1,6 +1,5 @@
-- name: 'restart openvpn'
-  service:
+---
+- name: 'Restart openvpn'
+  ansible.builtin.service:
     name: 'openvpn@server'
     state: 'restarted'
-- name: 'save iptables'
-  command: 'netfilter-persistent save'

@@ -13,18 +13,20 @@
     state: 'enabled'
 
 - name: 'Warn about IPtables masquerading rules'
-  debug:
+  ansible.builtin.debug:
     msg: '[WARNING]: Masquerading is not implemented with Firewalld'
   when: openvpn_out_nat_traffic
 
 - name: 'Disable Client-to-Client traffic'
-  shell: |
+  ansible.builtin.shell: |
     firewall-cmd --direct --permanent --add-rule ipv4 filter FORWARD 1 -i tun0 -o tun0 -j DROP
-    firewall-cmd --direct --permanent --add-rule ipv4 filter FORWARD 1 -i tun0 -o  {{ openvpn_out_interface}} -j DROP
+    firewall-cmd --direct --permanent --add-rule ipv4 filter FORWARD 1 -i tun0 -o  {{ openvpn_out_interface }} -j DROP
     firewall-cmd --direct --permanent --add-rule ipv4 filter FORWARD 1 -i {{ openvpn_out_interface }} -o tun0 -j DROP
     RET=$?
     firewall-cmd --reload
     exit $RET
   args:
-    warn: false # Direct rules are not implemented in the firewalld module
+    warn: false  # Direct rules are not implemented in the firewalld module
+  register: 'firewallcmd_output'
+  changed_when: firewallcmd_output['rc'] != 0
   when: not openvpn_permit_c2c_traffic

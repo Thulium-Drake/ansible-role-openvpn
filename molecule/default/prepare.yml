@@ -3,32 +3,35 @@
   hosts: 'all'
   tasks:
     - name: 'Update APT cache'
-      apt:
+      ansible.builtin.apt:
         update_cache: true
       when: ansible_facts['os_family'] == 'Debian'
 
     - name: 'Update YUM cache'
-      yum:
+      ansible.builtin.yum:
         update_cache: true
       when: ansible_facts['os_family'] == 'RedHat'
 
     - name: 'Ensure OS-specific packages'
-      package:
+      ansible.builtin.package:
         name:
           - 'firewalld'
           - 'python-firewall'
       when: ansible_facts['os_family'] == 'RedHat'
 
     - name: 'Ensure OS-specific services'
-      service:
+      ansible.builtin.service:
         name: 'firewalld'
         state: 'started'
       when: ansible_facts['os_family'] == 'RedHat'
 
     - name: 'Ensure directory'
-      file:
+      ansible.builtin.file:
         path: '/etc/ssl/openvpn'
         state: 'directory'
+        owner: 'root'
+        group: 'root'
+        mode: '0750'
 
     - name: 'Generate SSL key'
       community.crypto.openssl_privatekey:
@@ -42,7 +45,10 @@
         provider: 'selfsigned'
 
     - name: 'Copy cert to ca'
-      copy:
+      ansible.builtin.copy:
         src: '/etc/ssl/openvpn/server.crt'
         dest: '/etc/ssl/openvpn/ca.crt'
         remote_src: true
+        owner: 'root'
+        group: 'root'
+        mode: '0750'
